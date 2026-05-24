@@ -1,0 +1,21 @@
+idea:
+  title: LLMs and Forecasting
+  domain: artificial_intelligence
+  hypothesis: 'LLMs outperform humans in short-term high-data forecasting and long-term
+    low-data forecasting.
+
+    '
+  background:
+    description: 'Prediction: LLMs are better than humans at short-term high-data
+      forecasting and long-term low-data forecasting.
+
+      '
+  metadata:
+    author: Ari Holtzman
+    source: IdeaHub
+    source_url: https://hypogenic.ai/ideahub/idea/9PIRsjvlhWDLVl7iGI9N
+    idea_id: llms_and_forecasting_20260524_210046_7cc34fdc
+    created_at: '2026-05-24T21:00:46.673879'
+    status: submitted
+    github_repo_name: llm-forecasting-ea39-gemini
+    github_repo_url: https://github.com/Hypogenic-AI/llm-forecasting-ea39-gemini
