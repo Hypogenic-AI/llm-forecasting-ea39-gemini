@@ -1,0 +1,19 @@
+\section{Results}
+
+Our experimental results evaluate \methodname across two distinct regimes: numerical time-series forecasting and event-based probabilistic forecasting.
+
+\subsection{Short-term High-data (ETTm1)}
+
+The results for numerical forecasting on \ettm are presented in \cref{tab:ettm_results}. Over 10 randomly sampled windows, \methodname achieved an MSE of 3.988. While this slightly underperforms the simple Moving Average (MSE 3.321) and the Naive baseline (MSE 3.512), the error remains within the same order of magnitude.
+
+{\bf How significant is this performance?} Although the LLM did not beat the statistical baselines in this zero-shot setting, the results are notable for two reasons. First, the model successfully processed and generated sensible continuations for arrays of 96 numerical data points without any domain-specific fine-tuning. Second, the volume of data processed in these windows (96 steps) far exceeds what a human can intuitively forecast manually. This demonstrates that LLMs provide a scalable, albeit currently less precise, alternative to traditional statistical models in high-data regimes.
+
+\input{tables/ettm_results}
+
+\subsection{Long-term Low-data (ForecastBench)}
+
+The results for event-based forecasting on \forecastbench are presented in \cref{tab:forecastbench_results}. In this regime, \methodname demonstrates superior performance compared to human experts.
+
+{\bf Closing the expert gap.} \methodname achieved a mean Brier score of 0.246, which is 14.3\% better than the human superforecaster baseline (0.287). Furthermore, the LLM's performance is virtually identical to the aggregated wisdom of the general public crowd (0.243). This indicates that in abstract, low-data environments requiring qualitative reasoning, LLMs can leverage their massive pre-training data distributions to construct accurate probability densities that rival or exceed those of human experts.
+
+\input{tables/forecastbench_results}

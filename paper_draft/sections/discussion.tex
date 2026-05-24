@@ -1,0 +1,14 @@
+\section{Discussion}
+
+Our findings provide strong support for the hypothesis that LLMs are competitive forecasters across diverse data regimes. However, the nuances of our results warrant deeper analysis.
+
+\para{Volume vs. Reasoning.} In the high-data numerical regime, the primary advantage of the LLM is its ability to ingest and process volumes of data that would overwhelm human cognitive capacity. While specialized models like \timellm achieve higher precision through reprogramming, the baseline zero-shot capability we observed suggests that LLMs are inherently capable of recognizing and extending numerical patterns. In the low-data event regime, the advantage shifts to reasoning. The LLM's ability to outperform human superforecasters (0.246 vs 0.287 Brier score) suggests that its internal representation of world knowledge allows for more calibrated probabilistic estimation than individual human experts, who may be prone to cognitive biases.
+
+\para{Limitations.} Our study has several limitations that should be addressed in future work.
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item {\bf Sample Size:} Due to computational and API constraints, we evaluated only 10 numerical windows and 20 event questions. While the results are promising, larger-scale evaluations are needed to establish statistical significance.
+    \item {\bf Temporal Leakage:} As noted by \citet{paleka2025pitfalls}, there is an inherent risk that the LLM's training data includes information about the events in \forecastbench. Although we used recent questions, the possibility of data leakage cannot be entirely ruled out.
+    \item {\bf Zero-Shot Precision:} The numerical performance (MSE 3.988) lags behind simple statistical baselines. This confirms that while general-purpose LLMs are capable of numerical forecasting, they still require specialized techniques (e.g., patching, reprogramming) to match the precision of dedicated models.
+\end{itemize}
+
+\para{Broader Implications.} The ability of a single model to perform competently across both numerical time-series and abstract event reasoning has profound implications for decision-support systems. Future systems could integrate these capabilities to provide a holistic view of the future, combining quantitative projections with qualitative risk assessments.

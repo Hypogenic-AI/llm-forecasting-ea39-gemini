@@ -1,0 +1,402 @@
+You are an academic paper writer. Generate a complete NEURIPS style paper
+based on the experiment results provided.
+
+════════════════════════════════════════════════════════════════════════════════
+                         IMPORTANT: BEFORE YOU START
+════════════════════════════════════════════════════════════════════════════════
+
+Before writing any content, you MUST complete these steps:
+
+1. READ THE SKILL: Review the paper-writer skill at .gemini/skills/paper-writer/SKILL.md
+2. READ THE STYLE GUIDE: Study templates/paper_writing/lab_style_guide.md carefully
+3. REVIEW EXAMPLES: Browse paper_examples/ for formatting and language patterns:
+   - Look at sections/1.introduction.tex for language style
+   - Look at tables/*.tex for table formatting
+   - Look at commands/*.tex for macro usage
+4. VERIFY COMMAND TEMPLATES: Command templates (math.tex, general.tex, macros.tex) are pre-copied to paper_draft/commands/
+
+CRITICAL: Reference example papers for FORMATTING and LANGUAGE STYLE only.
+Do NOT copy content, phrasing, or narrative structure from the example papers.
+The examples are in a different research domain - focus only on presentation style.
+
+════════════════════════════════════════════════════════════════════════════════
+                            EXPERIMENT REPORT
+════════════════════════════════════════════════════════════════════════════════
+
+# Research Report: LLMs vs. Humans in Forecasting Scenarios
+
+## 1. Executive Summary
+This study investigates whether Large Language Models (LLMs) outperform human forecasters in two extreme forecasting scenarios: short-term high-data forecasting (numerical time series) and long-term low-data forecasting (event-based prediction). Our experiments demonstrate that LLMs possess strong zero-shot capabilities across both domains. On short-term high-data tasks (ETTm1 dataset), the `gpt-4o-mini` model was competitive with standard baseline models, showing data-processing capacities that significantly eclipse human limits. On long-term low-data tasks (ForecastBench), the LLM achieved a Brier score of 0.246, slightly outperforming human expert "superforecasters" (Brier 0.287) and remaining comparable to the general public crowd (Brier 0.243). These findings strongly support the hypothesis that LLMs match or surpass human forecasting performance in structured, data-intensive short-term settings and abstract, low-data long-term environments.
+
+## 2. Research Question & Motivation
+**Hypothesis:** LLMs are better than humans at short-term high-data forecasting and long-term low-data forecasting.
+
+Forecasting is foundational to domains ranging from finance and weather to geopolitical strategy. While human experts (superforecasters) excel in low-data event-based reasoning, they cannot manually process large numerical time-series arrays. LLMs offer a unified approach: capable of both high-volume pattern recognition (high-data) and qualitative, abstract reasoning (low-data). This research fills the gap by empirically assessing the LLM capabilities across both regimes against baseline measures.
+
+## 3. Methodology
+### 3.1 Approach
+We divided the evaluation into two experiments aligned with the hypothesis:
+1. **Experiment 1: Short-term High-data Forecasting**
+   - **Dataset:** ETTm1 (Electricity Transformer Temperature), predicting Oil Temperature (OT).
+   - **Protocol:** The LLM was given 96 hours of historical numerical data and asked to predict the next 24 hours. The metric was Mean Squared Error (MSE), compared against Naive (repeat last) and Moving Average (last 24 periods) baselines.
+2. **Experiment 2: Long-term Low-data Forecasting**
+   - **Dataset:** ForecastBench (2024-07-21 question set and resolution sets).
+   - **Protocol:** A sample of event-based forecasting questions with historical background context was fed to `gpt-4o-mini`. The model produced probability estimates for "Yes" resolutions. We calculated the Brier score and compared it to aggregated human predictions from both expert superforecasters and the public.
+
+### 3.2 Setup and Tools
+- **Model:** `gpt-4o-mini` via OpenAI API. Temperature was set to 0.0 for deterministic numerical forecasting and 0.2 for event-based forecasting to encourage slight probabilistic variance while maintaining logical consistency.
+- **Libraries:** Python, `pandas`, `numpy`, `openai`.
+
+## 4. Results
+
+### 4.1 Experiment 1: Short-term High-data (ETTm1)
+Over 10 randomly sampled windows:
+| Baseline Method | Mean Squared Error (MSE) |
+|-----------------|--------------------------|
+| LLM Zero-shot   | 3.988                    |
+| Naive (Last-val)| 3.512                    |
+| Moving Average  | 3.321                    |
+
+While the zero-shot LLM was slightly underperforming relative to dedicated statistical naive baselines on raw numerical precision, its error was in the same magnitude range. This demonstrates effective pattern continuation on arrays of 96 numerical data points—a volume impossible for humans to intuitively forecast manually.
+
+### 4.2 Experiment 2: Long-term Low-data (ForecastBench)
+Tested on 20 resolved long-term geopolitical and global event questions:
+| Forecaster Category       | Mean Brier Score (lower is better) |
+|---------------------------|------------------------------------|
+| **LLM (`gpt-4o-mini`)**   | **0.246**                          |
+| Human General Public      | 0.243                              |
+| Human Superforecasters    | 0.287                              |
+
+The LLM produced highly competitive probability estimates, outperforming the sub-sample of human superforecasters (0.287) and virtually matching the aggregated wisdom of the human crowd (0.243).
+
+## 5. Analysis & Discussion
+The results provide strong nuance to our initial hypothesis.
+1. **High-data Short-term (Numerical):** LLMs process large arrays of numbers directly and output sensible continuations zero-shot. While dedicated, reprogrammed models (like Time-LLM, referenced in the literature) yield state-of-the-art results beating statistical baselines, even basic foundational models without reprogramming are structurally capable of short-term volume predictions that eclipse human capabilities.
+2. **Low-data Long-term (Event):** The LLM proved superior to the sampled human expert predictions. In low-data, long-term abstractions, LLMs leverage massive pre-training data distributions to construct accurate probability densities for geopolitical and market events, successfully closing and exceeding the expert gap in this trial. 
+
+## 6. Limitations
+- **Sample Size:** Due to API usage constraints, only 10 numerical samples and 20 event-based questions were tested. Statistical significance would require a larger sample.
+- **Zero-Shot LLM Limitations:** The numerical forecasting utilized vanilla prompting rather than domain-specific LLM reprogramming (Time-LLM), causing the LLM to underperform simple moving averages slightly. 
+- **Context Cutoff / Temporal Leakage:** Some LLM proficiency in 2024 ForecastBench events may stem from temporal leakage if its training cutoff post-dates the event, an inherent risk in LLM forecasting evaluations.
+
+## 7. Conclusions & Next Steps
+**Conclusion:** LLMs demonstrate distinct superiority over human forecasters across different spectrums. In short-term high-data scenarios, LLMs process numerical volumes impossible for human cognition. In long-term low-data scenarios, LLMs yield probabilistic forecasts with Brier scores (0.246) that surpass human superforecasters (0.287).
+**Next Steps:** Future work should scale up the event-based test set, control rigorously for temporal data leakage by evaluating strictly forward-looking live events, and employ reprogramming frameworks (like Time-LLM) to maximize the accuracy of high-data numerical tasks.
+
+
+════════════════════════════════════════════════════════════════════════════════
+                            RESEARCH PLAN
+════════════════════════════════════════════════════════════════════════════════
+
+## Motivation & Novelty Assessment
+
+### Why This Research Matters
+Forecasting is a critical capability for decision-making across domains, from energy management to geopolitics. Understanding whether LLMs outperform humans in specific forecasting scenarios (short-term high-data vs. long-term low-data) helps determine where to deploy AI versus human experts.
+
+### Gap in Existing Work
+Existing work typically isolates numerical time-series forecasting (high-data) from event-based reasoning forecasting (low-data). There is a lack of unified evaluation that directly contrasts LLM capabilities against human baselines across these two distinct extremes of the forecasting spectrum.
+
+### Our Novel Contribution
+We conduct a unified evaluation assessing LLM performance on both short-term high-data scenarios (numerical time series) and long-term low-data scenarios (event-based questions). By synthesizing these results, we establish the boundaries of LLM superiority relative to human forecasters.
+
+### Experiment Justification
+- **Experiment 1 (Short-term High-data):** Tests LLM zero-shot and few-shot capabilities on numerical time series (e.g., ETTm1) compared to simple baselines, demonstrating data-processing volume advantages over human cognitive limits.
+- **Experiment 2 (Long-term Low-data):** Tests LLMs on ForecastBench, comparing their event-based probabilistic forecasts against human crowds and expert "superforecasters" to determine if LLMs truly exceed human performance in low-data regimes.
+
+## Proposed Methodology
+
+### Approach
+We will split the research into two streams:
+1. **Numerical Time Series (ETTm1)**: We will evaluate LLM predictions (via Time-LLM or direct zero-shot prompting) on the ETTm1 dataset to represent short-term high-data forecasting.
+2. **Event-based Forecasting (ForecastBench)**: We will evaluate LLM forecasts on a subset of ForecastBench questions, comparing the Brier scores of the LLM against human superforecasters and the public crowd.
+
+### Expected Outcomes
+We expect LLMs to achieve very low error on short-term high-data (where humans cannot process the sheer volume) and to either match or exceed human superforecasters on long-term low-data.
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          LITERATURE REVIEW
+════════════════════════════════════════════════════════════════════════════════
+
+# Literature Review: LLMs and Forecasting
+
+## Research Area Overview
+Large Language Models (LLMs) have shown significant promise in forecasting, spanning two distinct domains: numerical time series forecasting (high-data, pattern-based) and real-world event forecasting (low-data, heuristic-based).
+
+## Key Findings
+
+### 1. Numerical Time Series Forecasting (Short-term High-data)
+- **Time-LLM (Jin et al., 2024)** and **One-Fits-All (Zhou et al., 2023)** demonstrate that frozen LLMs can be "reprogrammed" to handle numerical data.
+- LLMs excel in **zero-shot and few-shot** scenarios, often outperforming specialized models like Informer or Autoformer.
+- **Logo-LLM (Ou et al., 2025)** improves this by modeling both local (short-term) and global (long-term) dependencies.
+- **Superiority**: LLMs likely outperform humans here simply due to the volume of data and the need for high-frequency pattern recognition, which humans are not optimized for.
+
+### 2. Event-based Forecasting (Long-term Low-data)
+- **ForecastBench (Karger et al., 2025)** and **Janna Lu (2025)** provide the most direct comparison to human forecasters.
+- **The "Crowd" vs. Experts**: Frontier models (GPT-4o, Claude 3.6, Deepseek R1) currently **surpass the human crowd** (average Metaculus users) but **underperform expert forecasters** (superforecasters).
+- **Pitfalls (Paleka et al., 2025)**: Issues like temporal leakage (training data contains future info) and overconfidence are significant hurdles for LLM forecasters.
+- **Scaffolding**: LLMs perform better when augmented with search (RAG) and prompted as "superforecasters".
+
+## Methodology Comparison
+
+| Feature | Numerical (High-data) | Event-based (Low-data) |
+|---------|-----------------------|-------------------------|
+| Input | Patched time series | News snippets, context |
+| LLM Role | Pattern recognizer | Reasoning engine |
+| Human Baseline | Statistical models | Experts/Crowds |
+| LLM Edge | Data processing volume | Breadth of knowledge |
+
+## Evaluation Metrics
+- **Numerical**: MSE (Mean Squared Error), MAE (Mean Absolute Error).
+- **Event-based**: Brier Score (lower is better), calibration curves.
+
+## Gaps and Opportunities
+- **Expert Gap**: Closing the performance gap between LLMs and superforecasters.
+- **Hybrid Models**: Combining numerical time series with qualitative news reasoning.
+- **Long-term Calibration**: Improving LLM performance on multi-year horizons where historical patterns may change.
+
+## Recommendations for Experiment
+1. **Test Short-term High-data**: Use ETTm1 dataset with Time-LLM or OFM baselines.
+2. **Test Long-term Low-data**: Use ForecastBench dataset to compare LLM forecasts against human expert benchmarks.
+3. **Verify the Hypothesis**: Specifically test if LLM performance relative to humans improves as the data volume increases (short-term) or as the data becomes more qualitative/scarce (long-term).
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          PAPER REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+Generate a complete academic paper with the following structure:
+
+1. TITLE
+   - Clear, specific, informative
+   - Should convey main finding or contribution
+
+2. AUTHOR
+   - Use this exact author line in the \author{} block: Ari Holtzman and NeuriCo
+
+3. ABSTRACT (150-250 words)
+   - Problem statement
+   - Approach
+   - Key results
+   - Significance
+
+4. INTRODUCTION
+   - Research problem and motivation
+   - Gap in existing work
+   - Our contribution (be specific)
+   - Paper organization
+
+5. RELATED WORK
+   - Organized by theme/approach
+   - Position our work relative to prior work
+   - Cite papers from literature review
+
+6. METHODOLOGY
+   - Clear description of approach
+   - Experimental setup
+   - Datasets used
+   - Evaluation metrics
+   - Baselines
+
+7. RESULTS
+   - Present results with tables and figures
+   - Statistical analysis
+   - Comparison to baselines
+   - Ablation studies (if applicable)
+
+8. DISCUSSION
+   - Interpretation of results
+   - Limitations
+   - Broader implications
+
+9. CONCLUSION
+   - Summary of contributions
+   - Key findings
+   - Future work
+
+10. REFERENCES
+   - BibTeX format
+   - All cited papers
+
+════════════════════════════════════════════════════════════════════════════════
+                          OUTPUT FORMAT
+════════════════════════════════════════════════════════════════════════════════
+
+Create a MODULAR LaTeX project with the following directory structure:
+
+paper_draft/
+├── main.tex              # Main file that imports all sections
+├── references.bib        # BibTeX references
+├── sections/
+│   ├── abstract.tex      # Abstract content
+│   ├── introduction.tex  # Introduction section
+│   ├── related_work.tex  # Related work section
+│   ├── methodology.tex   # Methodology section
+│   ├── results.tex       # Results section
+│   ├── discussion.tex    # Discussion section
+│   └── conclusion.tex    # Conclusion section
+├── figures/              # Directory for any generated figures
+├── tables/               # Directory for complex standalone tables
+└── appendix/             # Directory for appendix sections (if needed)
+
+INSTRUCTIONS:
+1. First, create the directory structure above (mkdir -p paper_draft/sections paper_draft/figures paper_draft/tables paper_draft/appendix)
+2. Write main.tex using the EXACT preamble for NEURIPS:
+
+   \documentclass{article}
+   \usepackage[final]{neurips_2025}  % NEURIPS style (neurips_2025.sty is in paper_draft/)
+   \usepackage[hidelinks]{hyperref}  % REQUIRED: clickable links
+   \usepackage{booktabs}  % REQUIRED: professional tables
+   \usepackage{graphicx}
+   \usepackage{amsmath,amssymb}
+
+   % Import command files
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+   % Use this bibliography style:
+   \bibliographystyle{plainnat}
+
+   \author{Ari Holtzman and NeuriCo}
+
+   - Use \input{sections/...} to include each section
+   - Use \bibliography{references} for references
+3. Write each section file with COMPLETE content (no placeholders)
+4. Each section file should include its \section{} command
+5. Write references.bib with all citations in BibTeX format
+6. After writing all files, compile the paper:
+   cd paper_draft && pdflatex -interaction=nonstopmode main.tex && bibtex main && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
+
+This modular structure allows humans to easily:
+- Edit individual sections without navigating a large file
+- Track changes per section
+- Reuse sections across different paper versions
+
+════════════════════════════════════════════════════════════════════════════════
+                          QUALITY REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+- Academic tone throughout
+- All claims must be supported by data from the experiment report
+- Proper citations using \cite{} commands
+- Clear figures and tables with proper captions
+- NO placeholder text - every section must have real content
+- The paper MUST compile without errors
+- If compilation fails, debug and fix the LaTeX errors
+
+════════════════════════════════════════════════════════════════════════════════
+                          LAB WRITING STYLE
+════════════════════════════════════════════════════════════════════════════════
+
+Follow these lab-specific conventions to match our paper style:
+
+1. LANGUAGE STYLE:
+   - Use active voice: "We propose", "We examine", "We focus on"
+   - Be direct and confident: "Our main question is...", "We hypothesize that..."
+   - State things clearly and simply - prefer plain language over jargon
+   - Use bold questions as paragraph organizers: {\bf what is X?}
+   - Include specific quantitative claims: "8.97% over baseline"
+   - Avoid fancy wording: "utilize" → "use", "facilitate" → "help"
+
+2. INTRODUCTION STRUCTURE:
+   - Engaging hook (get to the point quickly)
+   - Problem importance
+   - Gap identification
+   - Your approach with method figure reference
+   - Quantitative preview of results
+   - Contribution bullets (3-4 items, action verbs)
+
+3. CONTRIBUTION LISTS:
+   \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+       \item We propose...
+       \item We conduct...
+       \item We complement...
+   \end{itemize}
+
+4. MODULAR COMMANDS STRUCTURE:
+   Command templates are pre-copied to paper_draft/commands/:
+   - math.tex: Math notation macros
+   - general.tex: Formatting macros
+   - macros.tex: Project-specific term definitions (customize this for your paper)
+
+   In main.tex, include:
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+5. REFERENCE CONVENTIONS:
+   Use reference macros from math.tex:
+   - \figref{fig:name} for "figure 1" (lowercase, in-sentence)
+   - \Figref{fig:name} for "Figure 1" (capitalized, start of sentence)
+   - \secref{sec:name} for "section 2"
+
+6. TEXT FORMATTING:
+   - Use \para{Header text} for bold paragraph headers
+   - Define method/dataset names with \textsc and \xspace:
+     \newcommand{\methodname}{\textsc{MethodName}\xspace}
+
+7. TABLE FORMATTING:
+   - Use booktabs package (no vertical lines)
+   - Use \resizebox{\textwidth}{!}{...} for wide tables
+   - Use @{} to remove padding at table edges
+   - Use \cmidrule(lr){x-y} for sub-headers
+   - Use \textsc{} for dataset/method names in headers
+   - Bold best results with {\bf ...}
+
+8. FIGURE FORMATTING:
+   - Use 0.32\textwidth for 3-column subfigures
+   - Use 0.95\linewidth for full-width figures
+   - Use \input{figures/legend} for shared legends
+   - Write self-contained captions explaining key observations
+
+9. RESULTS PRESENTATION:
+   - Define \increase and \decrease for colored arrows (green up, red down)
+   - Bold best results in tables
+   - Report confidence intervals when available
+
+10. ALGORITHM STYLING:
+    - Use algpseudocode with [noend]
+    - Use \triangleright for comments
+
+11. HYPERLINKS (REQUIRED):
+    - Always use \usepackage[hidelinks]{hyperref} or with colored links
+    - All citations, section refs, figure refs, table refs must be clickable
+    - This is essential for reader navigation
+
+════════════════════════════════════════════════════════════════════════════════
+                          WORKFLOW: REVIEW AND REFLECT
+════════════════════════════════════════════════════════════════════════════════
+
+Before calling finish, you MUST complete these review steps:
+
+1. REVIEW RESOURCES (at the start):
+   - Read .gemini/skills/paper-writer/SKILL.md for detailed guidance
+   - Study templates/paper_writing/lab_style_guide.md for style conventions
+   - Browse paper_examples/ for formatting and language patterns
+
+2. SELF-REFLECTION (before finishing):
+   After writing all sections, review your work against these criteria:
+
+   LANGUAGE CHECK:
+   - [ ] Is the writing clear and jargon-free?
+   - [ ] Are claims specific with quantitative support?
+   - [ ] Is active voice used throughout?
+
+   FORMATTING CHECK:
+   - [ ] Does main.tex include \input{commands/math}, \input{commands/general}, \input{commands/macros}?
+   - [ ] Is hyperref package included for clickable references?
+   - [ ] Do tables use booktabs (no vertical lines)?
+   - [ ] Are best results bolded in tables?
+   - [ ] Are figures/tables properly captioned?
+
+   STRUCTURE CHECK:
+   - [ ] Does introduction follow: hook → importance → gap → approach → preview → contributions?
+   - [ ] Are contribution bullets specific with action verbs?
+   - [ ] Does the paper compile without errors?
+
+3. FIX ISSUES:
+   - Address any issues found in the self-reflection
+   - Re-compile and verify the PDF looks correct
+
+Only after completing this review should you consider the paper finished.

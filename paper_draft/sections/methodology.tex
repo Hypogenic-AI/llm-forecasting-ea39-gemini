@@ -1,0 +1,31 @@
+\section{Methodology}
+
+We evaluate the forecasting capabilities of \methodname across two distinct experimental setups: a short-term high-data numerical task and a long-term low-data event-based task.
+
+\subsection{Experiment 1: Short-term High-data Forecasting}
+
+\para{Dataset.} We use the \ettm dataset, a widely recognized benchmark for electricity transformer temperature forecasting. We specifically focus on predicting Oil Temperature (OT).
+
+\para{Protocol.} The model is presented with a 96-hour historical window of numerical data. The objective is to predict the next 24 hours (a 24-step horizon). We convert the numerical data into comma-separated strings for zero-shot ingestion by the LLM. No domain-specific reprogramming or fine-tuning is applied.
+
+\para{Baselines.} We compare \methodname against two standard statistical baselines:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item {\bf Naive (Last-value):} Repeats the last observed value for all 24 steps of the forecast horizon.
+    \item {\bf Moving Average (MA):} Uses the average of the previous 24 hours to predict the next 24 hours.
+\end{itemize}
+
+\para{Metrics.} Performance is measured using Mean Squared Error (MSE) over 10 randomly sampled windows from the test set.
+
+\subsection{Experiment 2: Long-term Low-data Forecasting}
+
+\para{Dataset.} We utilize \forecastbench, focusing on a subset of 20 resolved event-based questions from the 2024-07-21 question set. These questions cover geopolitical, economic, and technological events with horizons ranging from months to years.
+
+\para{Protocol.} For each question, \methodname is provided with historical background context and the specific forecasting prompt. The model is required to produce a probability estimate for the ``Yes'' resolution of the event. To ensure logical consistency while allowing for probabilistic calibration, the temperature is set to 0.2.
+
+\para{Human Baselines.} We compare the LLM forecasts against aggregated human data:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item {\bf Human General Public:} The mean probability estimate from a broad pool of human forecasters (the ``wisdom of the crowd'').
+    \item {\bf Human Superforecasters:} The mean probability estimate from a selected group of top-performing human experts.
+\end{itemize}
+
+\para{Metrics.} We use the Brier score, a standard metric for evaluating the accuracy of probabilistic forecasts. The Brier score for a set of $N$ predictions is defined as $BS = \frac{1}{N} \sum_{i=1}^N (f_i - o_i)^2$, where $f_i$ is the forecasted probability and $o_i$ is the actual outcome (0 or 1). Lower scores indicate better performance.

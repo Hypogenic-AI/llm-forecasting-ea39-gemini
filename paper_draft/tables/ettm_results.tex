@@ -1,0 +1,14 @@
+\begin{table}[t]
+\centering
+\caption{Mean Squared Error (MSE) on \ettm Oil Temperature (OT) prediction. The model is given 96 hours to predict the next 24 hours. Best results in \textbf{bold}.}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Method} & \textbf{MSE} \\
+\midrule
+LLM Zero-shot (\methodname) & 3.988 \\
+Naive (Repeat Last Value) & 3.512 \\
+Moving Average (MA) & \textbf{3.321} \\
+\bottomrule
+\end{tabular}
+\label{tab:ettm_results}
+\end{table}

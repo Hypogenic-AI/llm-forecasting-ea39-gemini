@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "completion_marker": "/workspaces/llm-forecasting-ea39-gemini/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/workspaces/llm-forecasting-ea39-gemini/literature_review.md",
+        "resources_catalog": "/workspaces/llm-forecasting-ea39-gemini/resources.md",
+        "papers_dir": "/workspaces/llm-forecasting-ea39-gemini/papers",
+        "datasets_dir": "/workspaces/llm-forecasting-ea39-gemini/datasets",
+        "code_dir": "/workspaces/llm-forecasting-ea39-gemini/code"
+      },
+      "log_file": "/workspaces/llm-forecasting-ea39-gemini/logs/resource_finder_gemini.log",
+      "transcript_file": "/workspaces/llm-forecasting-ea39-gemini/logs/resource_finder_gemini_transcript.jsonl",
+      "elapsed_time": 508.87043714523315
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 763.8254089355469,
+      "log_file": "/workspaces/llm-forecasting-ea39-gemini/logs/execution_gemini.log",
+      "transcript_file": "/workspaces/llm-forecasting-ea39-gemini/logs/execution_gemini_transcript.jsonl"
+    }
+  },
+  "work_dir": "/workspaces/llm-forecasting-ea39-gemini"
+}

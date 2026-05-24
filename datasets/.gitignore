@@ -1,0 +1,4 @@
+# ETT
+ett/**/*.csv
+# forecastbench
+# forecastbench/**/*.json
